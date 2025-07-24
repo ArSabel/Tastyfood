@@ -36,7 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
         if (payload.new && typeof payload.new === 'object' && 
             'producto_id' in payload.new && 'cantidad_actual' in payload.new) {
-          const stockData = payload.new as StockDiario;
+          const stockData = payload.new as unknown as StockDiario;
           setItems(currentItems =>
             currentItems.map(item =>
               item.id === stockData.producto_id

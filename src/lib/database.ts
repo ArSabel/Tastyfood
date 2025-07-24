@@ -450,7 +450,7 @@ export const facturasService = {
       ...factura,
       productos: factura.factura_detalles?.map(detalle => ({
         producto_id: detalle.producto_id,
-        producto_nombre: detalle.productos?.nombre || '',
+        producto_nombre: (detalle.productos as { nombre?: string })?.nombre || '',
         cantidad: detalle.cantidad,
         precio_unitario: detalle.precio_unitario,
         precio_total: detalle.precio_total
@@ -544,8 +544,8 @@ export const imagenesService = {
 // Tipos para payloads de sincronización
 export interface PayloadCambio {
   eventType: 'INSERT' | 'UPDATE' | 'DELETE';
-  new?: Record<string, any>;
-  old?: Record<string, any>;
+  new?: Record<string, unknown>;
+  old?: Record<string, unknown>;
   schema: string;
   table: string;
 }
