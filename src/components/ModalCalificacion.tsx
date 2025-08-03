@@ -35,7 +35,7 @@ const ModalCalificacion: React.FC<ModalCalificacionProps> = ({
       await calificacionesService.crear({
         usuario_id: usuarioId,
         calificacion,
-        comentario: comentario.trim() || null
+        comentario: comentario.trim() || undefined
       });
 
       // Resetear formulario

@@ -25,7 +25,7 @@ export default function OrdersPage() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [selectedFactura, setSelectedFactura] = useState<FacturaConDetalles | null>(null);
   const [showModalCalificacion, setShowModalCalificacion] = useState(false);
-  const [yaCalificoUsuario, setYaCalificoUsuario] = useState(false);
+
 
   useEffect(() => {
     if (!user) {
@@ -66,7 +66,6 @@ export default function OrdersPage() {
     try {
       // Verificar si el usuario ya ha calificado alguna vez
       const yaCalifico = await calificacionesService.usuarioYaCalifico(user.id);
-      setYaCalificoUsuario(yaCalifico);
       
       // Si ya calificó, no mostrar el modal
       if (yaCalifico) return;
@@ -132,7 +131,6 @@ export default function OrdersPage() {
   };
 
   const handleCalificacionEnviada = () => {
-    setYaCalificoUsuario(true);
     setShowModalCalificacion(false);
   };
 
