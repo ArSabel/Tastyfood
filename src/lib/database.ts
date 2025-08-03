@@ -89,7 +89,7 @@ export interface FacturaCompleta {
   impuesto: number;
   descuento: number;
   total: number;
-  estado: 'pendiente' | 'confirmada' | 'entregada' | 'cancelada';
+  estado: 'pendiente' | 'confirmada' | 'entregada' | 'cancelada' | 'pagado';
   metodo_pago: 'efectivo';
   notas?: string;
   fecha_factura: string;
@@ -667,5 +667,109 @@ export const sincronizacionService = {
     }
 
     return channel.subscribe();
+  }
+};
+
+// ============================================
+// SISTEMA DE CALIFICACIONES
+// ============================================
+
+// Interfaces para calificaciones
+export interface Calificacion {
+  id: number;
+  usuario_id: string;
+  calificacion: number; // 1-5
+  comentario?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NuevaCalificacion {
+  usuario_id: string;
+  calificacion: number;
+  comentario?: string;
+}
+
+export interface EstadisticasCalificaciones {
+  total_calificaciones: number;
+  promedio_calificacion: number;
+  distribucion: {
+    cinco_estrellas: number;
+    cuatro_estrellas: number;
+    tres_estrellas: number;
+    dos_estrellas: number;
+    una_estrella: number;
+  };
+}
+
+// Servicios para calificaciones
+export const calificacionesService = {
+  // Crear nueva calificación
+  async crear(calificacion: NuevaCalificacion): Promise<Calificacion> {
+    const { data, error } = await supabase
+      .from('calificaciones')
+      .insert(calificacion)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Verificar si usuario ya calificó
+  async usuarioYaCalifico(usuarioId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .rpc('usuario_ya_califico', { p_usuario_id: usuarioId });
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Verificar si es primer pedido pagado
+  async esPrimerPedidoPagado(usuarioId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .rpc('es_primer_pedido_pagado', { p_usuario_id: usuarioId });
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Obtener calificaciones de un usuario
+  async obtenerPorUsuario(usuarioId: string): Promise<Calificacion[]> {
+    const { data, error } = await supabase
+      .from('calificaciones')
+      .select('*')
+      .eq('usuario_id', usuarioId)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Obtener todas las calificaciones (para admin)
+  async obtenerTodas(): Promise<Calificacion[]> {
+    const { data, error } = await supabase
+      .from('calificaciones')
+      .select(`
+        *,
+        profiles:usuario_id (
+          first_name,
+          last_name,
+          email
+        )
+      `)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Obtener estadísticas
+  async obtenerEstadisticas(): Promise<EstadisticasCalificaciones> {
+    const { data, error } = await supabase
+      .rpc('obtener_estadisticas_calificaciones');
+    
+    if (error) throw error;
+    return data;
   }
 };

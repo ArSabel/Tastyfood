@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { facturasService, type FacturaCompleta } from '@/lib/database';
+import { facturasService, calificacionesService, type FacturaCompleta } from '@/lib/database';
 import QRCode from 'qrcode';
+import ModalCalificacion from '@/components/ModalCalificacion';
 
-type EstadoFactura = 'pendiente' | 'confirmada' | 'entregada' | 'cancelada';
+type EstadoFactura = 'pendiente' | 'confirmada' | 'entregada' | 'cancelada' | 'pagado';
 
 interface FacturaConDetalles extends FacturaCompleta {
   estado_display: string;
@@ -23,6 +24,8 @@ export default function OrdersPage() {
   const [showQR, setShowQR] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [selectedFactura, setSelectedFactura] = useState<FacturaConDetalles | null>(null);
+  const [showModalCalificacion, setShowModalCalificacion] = useState(false);
+
 
   useEffect(() => {
     if (!user) {
@@ -46,6 +49,9 @@ export default function OrdersPage() {
       }));
       
       setFacturas(facturasConDetalles);
+      
+      // Verificar si debe mostrar modal de calificación
+      await verificarModalCalificacion(facturasConDetalles);
     } catch (err) {
       console.error('Error al cargar facturas:', err);
       setError('Error al cargar el historial de pedidos');
@@ -54,12 +60,39 @@ export default function OrdersPage() {
     }
   };
 
+  const verificarModalCalificacion = async (facturas: FacturaConDetalles[]) => {
+    if (!user) return;
+    
+    try {
+      // Verificar si el usuario ya ha calificado alguna vez
+      const yaCalifico = await calificacionesService.usuarioYaCalifico(user.id);
+      
+      // Si ya calificó, no mostrar el modal
+      if (yaCalifico) return;
+      
+      // Buscar facturas pagadas
+      const facturasPagadas = facturas.filter(f => f.estado === 'pagado');
+      
+      if (facturasPagadas.length > 0) {
+        // Verificar si es el primer pedido pagado
+        const esPrimerPedido = await calificacionesService.esPrimerPedidoPagado(user.id);
+        
+        if (esPrimerPedido) {
+          setShowModalCalificacion(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar modal de calificación:', error);
+    }
+  };
+
   const getEstadoDisplay = (estado: EstadoFactura): string => {
     const estados = {
       'pendiente': 'Pendiente',
       'confirmada': 'Confirmada',
       'entregada': 'Entregada',
-      'cancelada': 'Cancelada'
+      'cancelada': 'Cancelada',
+      'pagado': 'Pagado'
     };
     return estados[estado] || estado;
   };
@@ -73,7 +106,8 @@ export default function OrdersPage() {
       'pendiente': 'bg-yellow-100 text-yellow-800',
       'confirmada': 'bg-blue-100 text-blue-800',
       'entregada': 'bg-green-100 text-green-800',
-      'cancelada': 'bg-red-100 text-red-800'
+      'cancelada': 'bg-red-100 text-red-800',
+      'pagado': 'bg-purple-100 text-purple-800'
     };
     return colores[estado] || 'bg-gray-100 text-gray-800';
   };
@@ -96,6 +130,14 @@ export default function OrdersPage() {
     }
   };
 
+  const handleCalificacionEnviada = () => {
+    setShowModalCalificacion(false);
+  };
+
+  const handleCerrarModalCalificacion = () => {
+    setShowModalCalificacion(false);
+  };
+
   if (!user) {
     return null;
   }
@@ -107,7 +149,7 @@ export default function OrdersPage() {
         
         {/* Modal QR Code */}
         {showQR && selectedFactura && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-[60]">
             <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
               <div className="text-center">
                 <h2 className="text-2xl font-bold mb-4 text-blue-600">Código QR del Pedido</h2>
@@ -144,6 +186,18 @@ export default function OrdersPage() {
               </div>
             </div>
           </div>
+        )}
+        
+
+        
+        {/* Modal de Calificación */}
+        {showModalCalificacion && (
+          <ModalCalificacion
+            isOpen={showModalCalificacion}
+            onClose={handleCerrarModalCalificacion}
+            usuarioId={user?.id || ''}
+            onCalificacionEnviada={handleCalificacionEnviada}
+          />
         )}
         
         {loading ? (
