@@ -23,9 +23,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div>
               <h3 className="text-lg font-semibold mb-4">Síguenos</h3>
               <div className="flex gap-4">
-                <a href="#" className="hover:text-blue-400 transition-colors">Facebook</a>
-                <a href="#" className="hover:text-blue-400 transition-colors">Instagram</a>
-                <a href="#" className="hover:text-blue-400 transition-colors">Twitter</a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Facebook</a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Instagram</a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">TikTok</a>
+                <a href="https://api.whatsapp.com/send/?phone=0958951061&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">WhatsApp</a>
               </div>
             </div>
           </div>

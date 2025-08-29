@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Phone, Calendar, MapPin, Edit2, Save, X, Menu, ShoppingCart } from 'lucide-react';
+import { User, Mail, Phone, Calendar, MapPin, Edit2, Save, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
-import { useCart } from '@/context/CartContext';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface UserProfile {
   id: string;
@@ -34,15 +34,12 @@ interface Address {
 export default function PerfilPage() {
   const { user, signOut } = useAuth();
   const router = useRouter();
-  const { totalItems } = useCart();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [address, setAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [editForm, setEditForm] = useState({
     first_name: '',
     last_name: '',
@@ -184,158 +181,7 @@ export default function PerfilPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-lg py-4">
-        <nav className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-blue-600">
-              <span className="text-3xl">🍔</span>
-              <span>TastyFood</span>
-            </Link>
-            
-            {/* Menú de escritorio */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/productos" className="font-medium hover:text-blue-600 transition-colors">
-                Menú
-              </Link>
-              <Link href="/nosotros" className="font-medium hover:text-blue-600 transition-colors">
-                Nosotros
-              </Link>
-              <Link href="/ubicaciones" className="font-medium hover:text-blue-600 transition-colors">
-                Ubicaciones
-              </Link>
-              <Link href="/contacto" className="font-medium hover:text-blue-600 transition-colors">
-                Contacto
-              </Link>
-              <Link href="/carrito" className="relative flex items-center font-medium hover:text-blue-600 transition-colors">
-                <ShoppingCart className="mr-1" size={18} />
-                Carrito
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
-              {user ? (
-                <div 
-                  className="relative"
-                  onMouseEnter={() => setShowDropdown(true)}
-                  onMouseLeave={() => setShowDropdown(false)}
-                >
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-1">
-                    Mi Cuenta
-                  </button>
-                  {showDropdown && (
-                    <div className="absolute right-0 top-full w-48 bg-transparent rounded-md shadow-lg z-10">
-                      <Link href="/perfil" className="block bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Mi Perfil
-                      </Link>
-                      <Link href="/pedidos" className="block bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Mis Pedidos
-                      </Link>
-                      <button 
-                         onClick={async () => {
-                           await signOut();
-                           router.push('/');
-                         }}
-                         className="block bg-red-600 w-full text-left px-4 py-2 text-sm text-white hover:bg-red-700 transition-colors rounded-b-lg"
-                       >
-                         Cerrar Sesión
-                       </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Iniciar Sesión
-                </Link>
-              )}
-            </div>
-            
-            {/* Botón de menú móvil */}
-            <button 
-              className="md:hidden text-gray-700"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-          
-          {/* Menú móvil */}
-          {mobileMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-              <div className="flex flex-col p-4 space-y-4">
-                <Link 
-                  href="/productos" 
-                  className="font-medium hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Menú
-                </Link>
-                <Link 
-                  href="/nosotros" 
-                  className="font-medium hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Nosotros
-                </Link>
-                <Link 
-                  href="/ubicaciones" 
-                  className="font-medium hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Ubicaciones
-                </Link>
-                <Link 
-                  href="/contacto" 
-                  className="font-medium hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contacto
-                </Link>
-                <Link 
-                  href="/carrito" 
-                  className="flex items-center font-medium hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <ShoppingCart className="mr-1" size={18} />
-                  Carrito {totalItems > 0 && `(${totalItems})`}
-                </Link>
-                {user ? (
-                  <div className="space-y-2">
-                    <Link href="/perfil" className="block font-medium hover:text-blue-600 transition-colors">
-                      Mi Perfil
-                    </Link>
-                    <Link href="/pedidos" className="block font-medium hover:text-blue-600 transition-colors">
-                      Mis Pedidos
-                    </Link>
-                    <button 
-                      onClick={async () => {
-                        await signOut();
-                        router.push('/');
-                      }}
-                      className="block bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-                    >
-                      Cerrar Sesión
-                    </button>
-                  </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-center"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Iniciar Sesión
-                  </Link>
-                )}
-              </div>
-            </div>
-          )}
-        </nav>
-      </header>
+      <Navbar />
 
       <div className="container mx-auto px-4 max-w-4xl py-8">
         {/* Header */}
@@ -377,15 +223,15 @@ export default function PerfilPage() {
 
         {/* Mensaje */}
         {mensaje && (
-          <div className={`mb-6 p-4 rounded-lg ${mensaje.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          <div className={`mb-6 p-4 rounded-lg ${mensaje.includes('Error') ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}`}>
             {mensaje}
           </div>
         )}
 
         {/* Información Personal */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <User className="mr-2" size={20} />
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <User className="mr-2 text-gray-700" size={20} />
             Información Personal
           </h2>
           
@@ -399,7 +245,7 @@ export default function PerfilPage() {
                   type="text"
                   value={editForm.first_name}
                   onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               ) : (
                 <p className="text-gray-900">{profile?.first_name || 'No especificado'}</p>
@@ -415,7 +261,7 @@ export default function PerfilPage() {
                   type="text"
                   value={editForm.last_name}
                   onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               ) : (
                 <p className="text-gray-900">{profile?.last_name || 'No especificado'}</p>
@@ -424,7 +270,7 @@ export default function PerfilPage() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <Mail className="mr-1" size={16} />
+                <Mail className="mr-1 text-gray-600" size={16} />
                 Email
               </label>
               <p className="text-gray-900">{user?.email}</p>
@@ -432,7 +278,7 @@ export default function PerfilPage() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <Phone className="mr-1" size={16} />
+                <Phone className="mr-1 text-gray-600" size={16} />
                 Teléfono
               </label>
               {editing ? (
@@ -440,7 +286,7 @@ export default function PerfilPage() {
                   type="tel"
                   value={editForm.phone}
                   onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               ) : (
                 <p className="text-gray-900">{profile?.phone || 'No especificado'}</p>
@@ -456,7 +302,7 @@ export default function PerfilPage() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <Calendar className="mr-1" size={16} />
+                <Calendar className="mr-1 text-gray-600" size={16} />
                 Fecha de Nacimiento
               </label>
               <p className="text-gray-900">
@@ -468,8 +314,8 @@ export default function PerfilPage() {
 
         {/* Dirección */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <MapPin className="mr-2" size={20} />
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <MapPin className="mr-2 text-gray-700" size={20} />
             Dirección
           </h2>
           
@@ -499,7 +345,7 @@ export default function PerfilPage() {
                   type="text"
                   value={editForm.postal_code}
                   onChange={(e) => setEditForm(prev => ({ ...prev, postal_code: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                   placeholder="Ej: Cerca del parque, frente a la farmacia"
                 />
               ) : (
@@ -522,6 +368,8 @@ export default function PerfilPage() {
           )}
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

@@ -134,7 +134,7 @@ export default function CartPage() {
                       setShowQR(false);
                       router.push('/pedidos');
                     }}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
                   >
                     Ver Mis Pedidos
                   </button>
@@ -143,7 +143,7 @@ export default function CartPage() {
                       setShowQR(false);
                       router.push('/productos');
                     }}
-                    className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
                   >
                     Seguir Comprando
                   </button>
@@ -158,7 +158,7 @@ export default function CartPage() {
             <p className="text-gray-600 text-lg">Tu carrito está vacío</p>
             <button 
               onClick={() => router.push('/productos')}
-              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
               Ver Productos
             </button>
@@ -234,7 +234,7 @@ export default function CartPage() {
                 <button 
                   onClick={handleCheckout}
                   disabled={processingOrder || cartLoading}
-                  className={`w-full py-3 rounded-lg text-lg font-semibold transition-colors ${
+                  className={`w-full py-3 rounded-lg text-lg font-semibold ${
                     processingOrder || cartLoading
                       ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -247,7 +247,7 @@ export default function CartPage() {
                   <p className="text-gray-600 mb-4">Inicia sesión para continuar con tu pedido</p>
                   <button 
                     onClick={() => router.push('/login')}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
                   >
                     Iniciar Sesión
                   </button>
