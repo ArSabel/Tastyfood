@@ -97,27 +97,30 @@ export default function Home() {
 
 
         {/* Hero Section */}
-        <section className="bg-blue-600 text-white py-20 px-6 rounded-xl mb-12">
-          <div className="max-w-4xl mx-auto text-center">
+        <section className="bg-blue-600 text-white py-20 px-6 rounded-xl mb-12 relative overflow-hidden">
+          {/* Círculos animados */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="circle-1 absolute w-40 h-40 rounded-full bg-blue-400 opacity-20 top-10 left-10 animate-float-slow"></div>
+            <div className="circle-2 absolute w-64 h-64 rounded-full bg-blue-300 opacity-20 bottom-10 right-10 animate-float-medium"></div>
+            <div className="circle-3 absolute w-24 h-24 rounded-full bg-blue-200 opacity-30 top-1/3 right-1/4 animate-float-fast"></div>
+            <div className="circle-4 absolute w-32 h-32 rounded-full bg-blue-500 opacity-20 bottom-1/4 left-1/3 animate-pulse-slow"></div>
+            <div className="circle-5 absolute w-16 h-16 rounded-full bg-white opacity-10 top-1/2 left-1/5 animate-pulse-fast"></div>
+          </div>
+          
+          <div className="max-w-4xl mx-auto text-center relative z-10">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Disfruta la mejor experiencia gastronómica en el campus
             </h1>
             <p className="text-xl mb-8">
               Platillos preparados con ingredientes frescos y de calidad premium
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link
                 href="/productos"
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold flex items-center justify-center"
+                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold flex items-center justify-center group"
               >
                 Ver Menú
-                <ArrowRight className="ml-2" size={20} />
-              </Link>
-              <Link
-                href="/productos"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition-colors font-semibold"
-              >
-                Promociones
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
               </Link>
             </div>
           </div>
