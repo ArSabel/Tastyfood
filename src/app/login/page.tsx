@@ -146,7 +146,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Sección derecha - Imagen */}
+        {/* Sección derecha - ImagenS */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
           <Image 
             src="/ImagenTasty1.png" 

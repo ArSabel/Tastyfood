@@ -25,7 +25,6 @@ async function testProfileInsertion() {
     last_name: 'Pérez',
     cedula_ruc: '1234567890',
     phone: '0987654321',
-    gender: 'M',
     birth_date: '1990-01-15'
   };
   

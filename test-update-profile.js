@@ -19,7 +19,6 @@ async function testRegistration() {
     last_name: '',
     cedula_ruc: '1234567890',
     phone: '',
-    gender: '',
     birth_date: '1990-01-15'
   };
 

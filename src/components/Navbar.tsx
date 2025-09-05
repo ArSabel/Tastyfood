@@ -16,18 +16,18 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <header className="bg-white shadow-lg py-4 transition-colors duration-300 sticky top-0 z-50">
+    <header className="bg-white shadow-lg py-4 transition-colors duration-300 z-50">
       <nav className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-blue-600">
+          <Link href="/" className="flex items-center space-x-2 text-xl sm:text-2xl font-bold text-blue-600">
             <Image 
               src="/TASTYFOOD.png" 
               alt="TastyFood Logo" 
               width={32}
               height={32}
-              className="h-8 w-8 object-contain"
+              className="h-6 w-6 sm:h-8 sm:w-8 object-contain"
             />
-            <span>TastyFood</span>
+            <span className="truncate">TastyFood</span>
           </Link>
           
           {/* Menú de escritorio */}
@@ -105,8 +105,8 @@ export default function Navbar() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden bg-white border-t border-gray-200 absolute left-0 right-0 top-full z-50 shadow-lg">
+            <div className="px-2 pt-2 pb-3 space-y-1 max-h-[80vh] overflow-y-auto">
               <Link 
                 href="/productos" 
                 className="block px-3 py-2 text-gray-700 hover:text-blue-600"

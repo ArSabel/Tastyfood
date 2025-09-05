@@ -45,6 +45,9 @@ export default function PerfilPage() {
     first_name: '',
     last_name: '',
     phone: '',
+    gender: '',
+    cedula_ruc: '',
+    birth_date: '',
     street: '',
     postal_code: ''
   });
@@ -60,7 +63,7 @@ export default function PerfilPage() {
     if (completeParam === 'true') {
       setEditing(true);
       setNeedsCompletion(true);
-      setMensaje('Para realizar pedidos debes completar los campos: Nombre, Apellido y Teléfono');
+      setMensaje('Para realizar pedidos debes completar los campos: Nombre, Apellido, Teléfono, Cédula/RUC y Fecha de Nacimiento');
     }
     
     loadProfile();
@@ -89,6 +92,9 @@ export default function PerfilPage() {
           first_name: profileData.first_name || '',
           last_name: profileData.last_name || '',
           phone: profileData.phone || '',
+          gender: profileData.gender || '',
+          cedula_ruc: profileData.cedula_ruc || '',
+          birth_date: profileData.birth_date || '',
           street: '',
           postal_code: ''
         });
@@ -124,14 +130,31 @@ export default function PerfilPage() {
       setSaving(true);
       
       // Actualizar perfil
+      const updateData: {
+        first_name: string;
+        last_name: string;
+        phone: string;
+        gender: string;
+        cedula_ruc: string;
+        birth_date?: string;
+        updated_at: string;
+      } = {
+        first_name: editForm.first_name,
+        last_name: editForm.last_name,
+        phone: editForm.phone,
+        gender: editForm.gender,
+        cedula_ruc: editForm.cedula_ruc,
+        updated_at: new Date().toISOString()
+      };
+      
+      // Solo incluir birth_date si tiene un valor válido y no está vacío
+      if (editForm.birth_date && editForm.birth_date.trim() !== '') {
+        updateData.birth_date = editForm.birth_date;
+      }
+      
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({
-          first_name: editForm.first_name,
-          last_name: editForm.last_name,
-          phone: editForm.phone,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', user.id);
 
       if (profileError) throw profileError;
@@ -226,6 +249,9 @@ export default function PerfilPage() {
                     first_name: profile?.first_name || '',
                     last_name: profile?.last_name || '',
                     phone: profile?.phone || '',
+                    gender: profile?.gender || '',
+                    cedula_ruc: profile?.cedula_ruc || '',
+                    birth_date: profile?.birth_date || '',
                     street: address?.street_address || '',
                     postal_code: address?.reference || ''
                   });
@@ -317,7 +343,17 @@ export default function PerfilPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cédula/RUC
               </label>
-              <p className="text-gray-900">{profile?.cedula_ruc || 'No especificado'}</p>
+              {editing ? (
+                <input
+                  type="text"
+                  value={editForm.cedula_ruc || ''}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, cedula_ruc: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="1234567890"
+                />
+              ) : (
+                <p className="text-gray-900">{profile?.cedula_ruc || 'No especificado'}</p>
+              )}
             </div>
             
             <div>
@@ -325,9 +361,45 @@ export default function PerfilPage() {
                 <Calendar className="mr-1 text-gray-600" size={16} />
                 Fecha de Nacimiento
               </label>
-              <p className="text-gray-900">
-                {profile?.birth_date ? new Date(profile.birth_date).toLocaleDateString() : 'No especificado'}
-              </p>
+              {editing ? (
+                <input
+                  type="date"
+                  value={editForm.birth_date || ''}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, birth_date: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <p className="text-gray-900">
+                  {profile?.birth_date ? new Date(profile.birth_date).toLocaleDateString() : 'No especificado'}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Género
+              </label>
+              {editing ? (
+                <select
+                  value={editForm.gender}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, gender: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                  <option value="otro">Otro</option>
+                </select>
+              ) : (
+                <p className="text-gray-900">
+                  {profile?.gender === 'masculino' ? 'Masculino' : 
+                   profile?.gender === 'femenino' ? 'Femenino' : 
+                   profile?.gender === 'otro' ? 'Otro' : 
+                   profile?.gender === 'M' ? 'Masculino' : 
+                   profile?.gender === 'F' ? 'Femenino' : 
+                   profile?.gender === 'O' ? 'Otro' : 'No especificado'}
+                </p>
+              )}
             </div>
           </div>
         </div>

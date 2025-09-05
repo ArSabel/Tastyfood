@@ -9,7 +9,7 @@ type UserProfile = {
   last_name: string;
   cedula_ruc: string;
   phone: string;
-  gender: string;
+  gender?: string;
   birth_date: string;
 };
 
@@ -199,7 +199,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               .from('profiles')
               .update({
                 cedula_ruc: profileData.cedula_ruc,
-                birth_date: profileData.birth_date,
+                birth_date: profileData.birth_date && profileData.birth_date.trim() !== '' ? profileData.birth_date : null,
                 updated_at: new Date().toISOString()
               })
               .eq('id', data.user.id);
@@ -220,11 +220,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               .insert({
                 id: data.user.id,
                 cedula_ruc: profileData.cedula_ruc,
-                birth_date: profileData.birth_date,
+                birth_date: profileData.birth_date && profileData.birth_date.trim() !== '' ? profileData.birth_date : null,
                 first_name: profileData.first_name || '',
                 last_name: profileData.last_name || '',
-                phone: profileData.phone || '',
-                gender: profileData.gender || ''
+                phone: profileData.phone || ''
               });
             
             clearTimeout(profileTimeoutId);

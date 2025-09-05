@@ -9,8 +9,6 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [cedula, setCedula] = useState('');
-  const [birthDate, setBirthDate] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -28,14 +26,13 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      // Incluir cédula/RUC y fecha de nacimiento en los datos del perfil
+      // Crear perfil básico con todos los campos requeridos
       const profileData = {
         first_name: '',
         last_name: '',
-        cedula_ruc: cedula,
         phone: '',
-        gender: '',
-        birth_date: birthDate
+        cedula_ruc: '',
+        birth_date: ''
       };
       await signUp(email, password, profileData);
       // Redirigir al usuario a completar su perfil en lugar de ir al login
@@ -66,8 +63,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4 relative">
-      <div className="bg-white rounded-xl lg:rounded-2xl shadow-2xl overflow-hidden max-w-5xl w-full h-full max-h-[95vh] flex relative">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4 md:p-6 py-6 sm:py-8 relative">
+      <div className="bg-white rounded-xl lg:rounded-2xl shadow-2xl overflow-hidden max-w-5xl w-full flex flex-col lg:flex-row relative">
         {/* Botón de volver al inicio - zona señalada */}
         <button
           onClick={() => router.push('/')}
@@ -90,7 +87,7 @@ export default function RegisterPage() {
           </svg>
         </button>
         {/* Sección izquierda - Formulario */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center overflow-y-auto">
+        <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center order-2 lg:order-1">
           {/* Logo y título */}
           <div className="text-center mb-4 sm:mb-6">
             <Image 
@@ -98,7 +95,8 @@ export default function RegisterPage() {
               alt="Tasty Food Logo" 
               width={112}
               height={112}
-              className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-2 sm:mb-3 drop-shadow-lg"
+              priority
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto mb-2 sm:mb-3 drop-shadow-lg"
             />
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
               Bienvenido a Tasty Food
@@ -163,36 +161,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div>
-              <label htmlFor="cedula" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                Cédula/RUC
-              </label>
-              <input
-                id="cedula"
-                name="cedula"
-                type="text"
-                required
-                value={cedula}
-                onChange={(e) => setCedula(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="1234567890"
-              />
-            </div>
 
-            <div>
-              <label htmlFor="birth-date" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                Fecha de Nacimiento
-              </label>
-              <input
-                id="birth-date"
-                name="birth-date"
-                type="date"
-                required
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xs sm:text-sm">
@@ -231,11 +200,13 @@ export default function RegisterPage() {
         </div>
 
         {/* Sección derecha - Imagen */}
-        <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        <div className="hidden md:block md:w-full lg:w-1/2 relative overflow-hidden min-h-[200px] order-1 lg:order-2">
           <Image 
             src="/ImagenTasty1.png" 
             alt="Tasty Food" 
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority
             className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>

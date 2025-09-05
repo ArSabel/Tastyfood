@@ -219,22 +219,7 @@ export default function ContactoPage() {
                     </div>
                   </div>
                 </div>
-                
-                {/* Social Media */}
-                <div className="bg-white rounded-lg shadow-lg p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Síguenos en redes sociales</h3>
-                  <div className="flex space-x-4">
-                    <a href="#" className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors">
-                      <Facebook className="h-6 w-6" />
-                    </a>
-                    <a href="#" className="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition-colors">
-                      <Instagram className="h-6 w-6" />
-                    </a>
-                    <a href="#" className="bg-green-600 text-white p-3 rounded-full hover:bg-green-700 transition-colors">
-                      <MessageCircle className="h-6 w-6" />
-                    </a>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
