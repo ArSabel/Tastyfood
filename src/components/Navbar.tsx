@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, Menu, X, User } from 'lucide-react';
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -19,9 +20,11 @@ export default function Navbar() {
       <nav className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-blue-600">
-            <img 
+            <Image 
               src="/TASTYFOOD.png" 
               alt="TastyFood Logo" 
+              width={32}
+              height={32}
               className="h-8 w-8 object-contain"
             />
             <span>TastyFood</span>

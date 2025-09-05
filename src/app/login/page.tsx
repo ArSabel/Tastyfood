@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
@@ -55,9 +56,11 @@ export default function LoginPage() {
         <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
           {/* Logo y título */}
           <div className="text-center mb-4 sm:mb-6">
-            <img 
+            <Image 
               src="/TASTYFOOD.png" 
               alt="Tasty Food Logo" 
+              width={112}
+              height={112}
               className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-2 sm:mb-3 drop-shadow-lg"
             />
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
@@ -145,10 +148,11 @@ export default function LoginPage() {
 
         {/* Sección derecha - Imagen */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
-          <img 
+          <Image 
             src="/ImagenTasty1.png" 
             alt="Tasty Food" 
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            fill
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
         </div>

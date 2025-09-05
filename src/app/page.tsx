@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { Clock, Phone, Mail, Facebook, Instagram, ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { seccionesService, productosService, Seccion, Producto } from '@/lib/database';
+import Image from 'next/image';
+import Navbar from '@/components/Navbar';
+import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import Navbar from '@/components/Navbar';
+import { Producto, Seccion, seccionesService, productosService } from '@/lib/database';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -18,6 +20,7 @@ export default function Home() {
   const [addingToCart, setAddingToCart] = useState<number | null>(null);
   const [mensaje, setMensaje] = useState<string | null>(null);
   const { addItem, loading: cartLoading } = useCart();
+  const { user, checkProfileComplete } = useAuth();
   const router = useRouter();
 
   // Promociones
@@ -51,6 +54,21 @@ export default function Home() {
 
   const handleAddToCart = async (producto: Producto & { stock_disponible: number }) => {
     if (cartLoading || addingToCart === producto.id) return;
+    
+    // Verificar si el usuario está autenticado
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    
+    // Verificar si el perfil está completo
+    const isProfileComplete = await checkProfileComplete();
+    
+    if (!isProfileComplete) {
+      alert('Para realizar pedidos debes completar tu perfil con: Nombre, Apellido y Teléfono');
+      router.push('/perfil?complete=true');
+      return;
+    }
     
     try {
       setAddingToCart(producto.id);
@@ -196,9 +214,11 @@ export default function Home() {
                 <div key={product.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-48 bg-gray-100 flex items-center justify-center">
                     {product.imagen_url ? (
-                      <img 
+                      <Image 
                         src={product.imagen_url} 
                         alt={product.nombre}
+                        width={400}
+                        height={192}
                         className="w-full h-full object-cover"
                       />
                     ) : (

@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [cedula, setCedula] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -26,17 +28,18 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      // Provide empty profile data for basic registration
+      // Incluir cédula/RUC y fecha de nacimiento en los datos del perfil
       const profileData = {
         first_name: '',
         last_name: '',
-        cedula_ruc: '',
+        cedula_ruc: cedula,
         phone: '',
         gender: '',
-        birth_date: ''
+        birth_date: birthDate
       };
       await signUp(email, password, profileData);
-      router.push('/login');
+      // Redirigir al usuario a completar su perfil en lugar de ir al login
+      router.push('/perfil?complete=true');
     } catch (err: unknown) {
       console.error('Error en registro:', err);
       
@@ -87,12 +90,14 @@ export default function RegisterPage() {
           </svg>
         </button>
         {/* Sección izquierda - Formulario */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+        <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center overflow-y-auto">
           {/* Logo y título */}
           <div className="text-center mb-4 sm:mb-6">
-            <img 
+            <Image 
               src="/TASTYFOOD.png" 
               alt="Tasty Food Logo" 
+              width={112}
+              height={112}
               className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-2 sm:mb-3 drop-shadow-lg"
             />
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
@@ -158,6 +163,37 @@ export default function RegisterPage() {
               />
             </div>
 
+            <div>
+              <label htmlFor="cedula" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Cédula/RUC
+              </label>
+              <input
+                id="cedula"
+                name="cedula"
+                type="text"
+                required
+                value={cedula}
+                onChange={(e) => setCedula(e.target.value)}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="1234567890"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="birth-date" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Fecha de Nacimiento
+              </label>
+              <input
+                id="birth-date"
+                name="birth-date"
+                type="date"
+                required
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xs sm:text-sm">
                 {error}
@@ -196,10 +232,11 @@ export default function RegisterPage() {
 
         {/* Sección derecha - Imagen */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
-          <img 
+          <Image 
             src="/ImagenTasty1.png" 
             alt="Tasty Food" 
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            fill
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
         </div>

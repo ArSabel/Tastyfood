@@ -389,23 +389,32 @@ useEffect(() => {
 
 2. **Actualizar database.ts**: Agregar las interfaces y servicios de calificaciones
 
-3. **Crear componentes**: 
-   - Crear `src/components/SelectorEstrellas.tsx`
-   - Crear `src/components/ModalCalificacion.tsx`
+3. **Crear componentes**:
+
+   * Crear `src/components/SelectorEstrellas.tsx`
+
+   * Crear `src/components/ModalCalificacion.tsx`
 
 4. **Modificar página de pedidos**: Actualizar `src/app/pedidos/page.tsx` con la nueva lógica
 
 5. **Probar la funcionalidad**:
-   - Crear un pedido de prueba
-   - Cambiar el estado a 'pagado' en la base de datos
-   - Verificar que aparezca el modal de calificación
-   - Enviar una calificación y verificar que se guarde correctamente
+
+   * Crear un pedido de prueba
+
+   * Cambiar el estado a 'pagado' en la base de datos
+
+   * Verificar que aparezca el modal de calificación
+
+   * Enviar una calificación y verificar que se guarde correctamente
 
 ## 6. Consideraciones adicionales
 
-- El modal solo aparece una vez por usuario (después de su primer pedido pagado)
-- Las calificaciones se almacenan con timestamp para análisis futuro
-- Se incluyen funciones para obtener estadísticas de calificaciones
-- El sistema es escalable para futuras mejoras (como calificaciones por producto)
+* El modal solo aparece una vez por usuario (después de su primer pedido pagado)
+
+* Las calificaciones se almacenan con timestamp para análisis futuro
+
+* Se incluyen funciones para obtener estadísticas de calificaciones
+
+* El sistema es escalable para futuras mejoras (como calificaciones por producto)
 
 Esta implementación mantiene la simplicidad del sistema actual mientras agrega una funcionalidad valiosa para recopilar feedback de los usuarios.

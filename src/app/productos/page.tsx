@@ -1,25 +1,51 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Layout from '@/components/Layout';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { useProducts } from '@/hooks/useProducts';
 import { Producto } from '@/lib/database';
 
 export default function ProductsPage() {
   const [selectedSeccion, setSelectedSeccion] = useState<number | null>(null);
   const { addItem, loading: cartLoading } = useCart();
+  const { user, checkProfileComplete } = useAuth();
   const { productos, secciones, loading, error } = useProducts();
   const [addingToCart, setAddingToCart] = useState<number | null>(null);
   const [mensaje, setMensaje] = useState<string | null>(null);
+  const router = useRouter();
 
   const filteredProducts = selectedSeccion === null
     ? productos
     : productos.filter(producto => producto.seccion_id === selectedSeccion);
 
   const handleAddToCart = async (producto: Producto & { stock_disponible: number }) => {
-    setAddingToCart(producto.id);
     setMensaje(null);
+    
+    // Verificar si el usuario está autenticado
+    if (!user) {
+      setMensaje('Debes iniciar sesión para agregar productos al carrito');
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+      return;
+    }
+    
+    // Verificar si el perfil está completo
+    const isProfileComplete = await checkProfileComplete();
+    
+    if (!isProfileComplete) {
+      setMensaje('Para realizar pedidos debes completar tu perfil con: Nombre, Apellido y Teléfono');
+      setTimeout(() => {
+        router.push('/perfil?complete=true');
+      }, 3000);
+      return;
+    }
+    
+    setAddingToCart(producto.id);
     
     try {
       const result = await addItem({
@@ -115,9 +141,11 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map(producto => (
             <div key={producto.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
+              <Image
                 src={producto.imagen_url || '/placeholder-food.jpg'}
                 alt={producto.nombre}
+                width={400}
+                height={192}
                 className="w-full h-48 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;

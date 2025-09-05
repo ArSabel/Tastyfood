@@ -1,16 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MapPin, Clock, Phone, Mail, Navigation } from 'lucide-react';
+import { MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export default function UbicacionesPage() {
-  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gray-50">

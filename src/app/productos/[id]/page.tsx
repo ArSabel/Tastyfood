@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Layout from '@/components/Layout';
 import { useCart } from '@/context/CartContext';
 import { productosService, type Producto } from '@/lib/database';
@@ -86,9 +87,19 @@ export default function ProductDetailPage() {
     );
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!user) {
-      router.push('/auth/login');
+      router.push('/login');
+      return;
+    }
+    
+    // Verificar si el perfil está completo
+    const { checkProfileComplete } = useAuth();
+    const isProfileComplete = await checkProfileComplete();
+    
+    if (!isProfileComplete) {
+      alert('Para realizar pedidos debes completar tu perfil con: Nombre, Apellido y Teléfono');
+      router.push('/perfil?complete=true');
       return;
     }
 
@@ -120,9 +131,11 @@ export default function ProductDetailPage() {
           <div className="md:flex">
             <div className="md:flex-shrink-0">
               <div className="h-64 w-full md:w-96 bg-gray-300 relative">
-                <img
-                  src={product.imagen_url}
+                <Image
+                  src={product.imagen_url || '/api/placeholder/400/300'}
                   alt={product.nombre}
+                  width={384}
+                  height={256}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

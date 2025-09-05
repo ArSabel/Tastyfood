@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -158,10 +159,12 @@ export default function OrdersPage() {
                 </p>
                 
                 <div className="bg-white p-4 rounded-lg border-2 border-gray-200 mb-6">
-                  <img 
+                  <Image 
                     src={qrCodeUrl} 
                     alt="Código QR del pedido" 
-                    className="mx-auto w-48 h-48"
+                    width={192}
+                    height={192}
+                    className="mx-auto"
                   />
                 </div>
                 

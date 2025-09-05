@@ -32,7 +32,7 @@ interface Address {
 }
 
 export default function PerfilPage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, checkProfileComplete } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [address, setAddress] = useState<Address | null>(null);
@@ -40,6 +40,7 @@ export default function PerfilPage() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
+  const [needsCompletion, setNeedsCompletion] = useState(false);
   const [editForm, setEditForm] = useState({
     first_name: '',
     last_name: '',
@@ -53,6 +54,15 @@ export default function PerfilPage() {
       router.push('/login');
       return;
     }
+    
+    // Verificar si el usuario viene de registro y necesita completar su perfil
+    const completeParam = new URLSearchParams(window.location.search).get('complete');
+    if (completeParam === 'true') {
+      setEditing(true);
+      setNeedsCompletion(true);
+      setMensaje('Para realizar pedidos debes completar los campos: Nombre, Apellido y Teléfono');
+    }
+    
     loadProfile();
   }, [user, router]);
 
@@ -156,7 +166,17 @@ export default function PerfilPage() {
         }
       }
 
-      setMensaje('Perfil actualizado correctamente');
+      // Verificar si el perfil está completo después de la actualización
+      // Verificamos manualmente en lugar de usar checkProfileComplete para evitar bucles de actualización
+      const isComplete = editForm.first_name && editForm.last_name && editForm.phone;
+      
+      if (needsCompletion && isComplete) {
+        setMensaje('¡Perfil completado correctamente! Ahora puedes realizar pedidos.');
+        setNeedsCompletion(false);
+      } else {
+        setMensaje('Perfil actualizado correctamente');
+      }
+      
       setEditing(false);
       await loadProfile();
     } catch (error) {

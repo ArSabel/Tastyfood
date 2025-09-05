@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Instagram, Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
@@ -8,9 +9,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <img 
+              <Image 
                 src="/TASTYFOOD.png" 
                 alt="TastyFood Logo" 
+                width={32}
+                height={32}
                 className="h-8 w-8 object-contain"
               />
               <span className="text-2xl font-bold">TastyFood</span>

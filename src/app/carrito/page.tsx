@@ -5,12 +5,13 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 import { facturasService, ProductoCarrito } from '@/lib/database';
 import QRCode from 'qrcode';
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, verificarDisponibilidad, clearCart, loading: cartLoading } = useCart();
-  const { user } = useAuth();
+  const { user, checkProfileComplete } = useAuth();
   const router = useRouter();
   const [processingOrder, setProcessingOrder] = useState(false);
   const [orderMessage, setOrderMessage] = useState<string | null>(null);
@@ -28,6 +29,17 @@ export default function CartPage() {
   const handleCheckout = async () => {
     if (!user) {
       router.push('/login');
+      return;
+    }
+    
+    // Verificar si el perfil está completo
+    const profileComplete = await checkProfileComplete();
+    
+    if (!profileComplete) {
+      setOrderMessage('Para realizar pedidos debes completar tu perfil con: Nombre, Apellido y Teléfono');
+      setTimeout(() => {
+        router.push('/perfil?complete=true');
+      }, 3000);
       return;
     }
 
@@ -112,9 +124,11 @@ export default function CartPage() {
                 </p>
                 
                 <div className="bg-white p-4 rounded-lg border-2 border-gray-200 mb-6">
-                  <img 
+                  <Image 
                     src={qrCodeUrl} 
                     alt="Código QR del pedido" 
+                    width={192}
+                    height={192}
                     className="mx-auto w-48 h-48"
                   />
                 </div>
